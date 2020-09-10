@@ -15,6 +15,8 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void paintEvent(QPaintEvent *);//绘图事件，绘制背景图片
+    void StartGame();//开始游戏初始化
     ~MainWindow();
 
 private:
