@@ -7,11 +7,15 @@ bool cmp( Player &a , Player &b)
 }//比较函数
 
 
-Platform::Platform(int num)//根据玩家人数初始化平台数据
+Platform::Platform()//根据玩家人数初始化平台数据
 {
-    playernum = num;//玩家人数初始化
+    playernum = 0;//默认人数为0
     night_type = 0;//夜晚属性初始化（默认红夜）
+}
 
+void Platform::init(int num)
+{
+    Set_Playernum(num);
     srand(time(NULL));//利用1-n随机数分配每人身份存入玩家容器
     std::vector<int>Temp;
     for(int i=1;i<=num;i++)
@@ -66,7 +70,7 @@ int Platform::GameOver()//判断游戏是否结束 0未结束 1结束，红牌�
 int Platform::Get_Openeyes(int id)//获取对应阵营夜晚睁眼人数
 {
     int count = 0;
-    for(int i=0;i<P.size();i++)
+    for(unsigned int i=0;i<P.size();i++)
     {
         if(P[i].Get_Openeye()&&P[i].Get_Id()==id)
             count++;
@@ -77,7 +81,7 @@ int Platform::Get_Openeyes(int id)//获取对应阵营夜晚睁眼人数
 int Platform::Get_IdNumber(int id)//获取对应阵营当前存活人数
 {
     int count = 0;
-    for(int i=0;i<P.size();i++)
+    for(unsigned int i=0;i<P.size();i++)
     {
         if((!P[i].Get_Death())&&(P[i].Get_Id()==id))
             count++;
@@ -90,6 +94,11 @@ void Platform::Change_Night()//改变夜晚类型
     srand(time(NULL));
     int temp = rand()%2;
     night_type=temp;
+}
+
+void Platform::Set_Playernum(int num)
+{
+    playernum = num;
 }
 
 int Platform::Choose_Leader(int pos)//村长死亡后选择另外一人成为村长

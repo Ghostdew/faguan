@@ -13,7 +13,7 @@ class Platform
     int playernum;//玩家人数
     int night_type;//夜晚类型 0为红夜，1为黑夜
 public:
-    Platform(int num);
+    Platform();
     std::vector<Player>P;//玩家容器
     int Get_Night();//获取夜晚类型
     int Get_PlayerNum();//获取玩家人数
@@ -21,6 +21,8 @@ public:
     int Get_Openeyes(int id);//获取对应阵营夜晚睁眼人数
     int Get_IdNumber(int id);//获取对应阵营当前存活人数
     int Choose_Leader(int pos);//村长死亡后选择另外一人成为村长
+    void init(int num);//初始化
+    void Set_Playernum(int num);
     void Change_Night();//改变夜晚类型
     void Speech();//白天发言阶段
     void Vote();//白天投票阶段

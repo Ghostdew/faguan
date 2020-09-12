@@ -4,5 +4,7 @@
         <file>image/titleicon.jpg</file>
         <file>image/StartButton.jpg</file>
         <file>image/StartButton2.jpg</file>
+        <file>image/black.png</file>
+        <file>image/red.png</file>
     </qresource>
 </RCC>
