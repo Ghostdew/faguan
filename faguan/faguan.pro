@@ -27,15 +27,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     player.cpp \
-    platform.cpp
+    platform.cpp \
+    votedialog.cpp
 
 HEADERS += \
         mainwindow.h \
     player.h \
-    platform.h
+    platform.h \
+    votedialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    votedialog.ui
 
 RESOURCES += \
     res.qrc

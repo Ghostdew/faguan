@@ -202,7 +202,7 @@ border-image: url(:/image/StartButton.jpg);</string>
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -246,7 +246,7 @@ border-image: url(:/image/StartButton.jpg);</string>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>530</x>
@@ -290,19 +290,28 @@ border-image: url(:/image/StartButton.jpg);</string>
      </item>
     </layout>
    </widget>
+   <widget class="QLCDNumber" name="lcdNumber">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>550</y>
+      <width>64</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>titlelabel</zorder>
-   <zorder>StartButton</zorder>
    <zorder>picturelabel</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>StartButton</zorder>
    <zorder>tiptable</zorder>
    <zorder>statuslabel1</zorder>
    <zorder>statuslabel2</zorder>
    <zorder>statuslabel3</zorder>
-   <zorder>daylabel1</zorder>
-   <zorder>daylabel2</zorder>
-   <zorder>playerlabel1</zorder>
-   <zorder>playerlabel2</zorder>
    <zorder>speechbtn</zorder>
    <zorder>textEdit</zorder>
+   <zorder>lcdNumber</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

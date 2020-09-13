@@ -11,6 +11,7 @@ class Player;
 class Platform
 {
     int playernum;//玩家人数
+    int status;//当前状态 0为第一天村长选举阶段，1为白天发言阶段，2为白天放逐阶段，3为夜晚
     int night_type;//夜晚类型 0为红夜，1为黑夜
 public:
     Platform();
@@ -24,9 +25,7 @@ public:
     void init(int num);//初始化
     void Set_Playernum(int num);
     void Change_Night();//改变夜晚类型
-    void Speech();//白天发言阶段
-    void Vote();//白天投票阶段
-    void Exile(Player a);//白天放逐阶段
+
 
 };
 

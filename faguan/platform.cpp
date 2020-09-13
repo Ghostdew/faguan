@@ -10,6 +10,7 @@ bool cmp( Player &a , Player &b)
 Platform::Platform()//根据玩家人数初始化平台数据
 {
     playernum = 0;//默认人数为0
+    status = 0;//默认第一天发言阶段
     night_type = 0;//夜晚属性初始化（默认红夜）
 }
 

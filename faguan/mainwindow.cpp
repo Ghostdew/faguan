@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QDebug>
 #include <QPushButton>
+#include <cmath>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,12 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->StartButton->setStyleSheet("border-image: url(:/image/StartButton2.jpg);");
     });//开始按钮点击变化实现
 
+
+
     connect(ui->StartButton,&QToolButton::released,[=](){
         ui->StartButton->setStyleSheet("border-image: url(:/image/StartButton.jpg);");
         StartGame();
     });//点击按钮开始游戏
 
-    connect(&Timer1,&QTimer::timeout,this,&MainWindow::Go);//判断游戏开始
+    connect(&Timer_Gamestart,&QTimer::timeout,this,&MainWindow::Go);//判断游戏开始
 
     ui->titlelabel->setStyleSheet("color:red");//设置标题颜色
 
@@ -78,8 +81,7 @@ void MainWindow::StartGame()//游戏开始初始化
         int playernum = nbox->value();
         form.init(playernum);
         Choose_num->close();
-        Timer1.setInterval(10);//发出游戏开始信号
-        Timer1.start(1);
+        Timer_Gamestart.start(1);//发出游戏开始信号
         //qDebug() << playernum;
     });
     connect(cancel,&QPushButton::clicked,Choose_num,[=](){
@@ -90,7 +92,7 @@ void MainWindow::StartGame()//游戏开始初始化
 
 void MainWindow:: Go()
 {
-    Timer1.stop();//停止触发器
+    Timer_Gamestart.stop();//停止触发器
     ui->StartButton->setVisible(false);//显示控件
     ui->titlelabel->setVisible(false);
     ui->picturelabel->setVisible(true);
@@ -116,8 +118,120 @@ void MainWindow:: Go()
     ui->playerlabel2->setVisible(true);
     ui->textEdit->setVisible(true);
     ui->speechbtn->setVisible(true);
+    if(form.P[0].Get_Id()==0)//设置玩家头像
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/red.png)");
+    }else
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
+    }
+
+    Speech();
+}
+
+
+void MainWindow::Speech()
+{
+    Timer_speech1.setInterval(1000);
+    Timer_speech1.start();
+    time_left = 10;
+    Timer_speech2.setInterval(10000);
+    Timer_speech2.start();
+
+    connect(&Timer_speech1,&QTimer::timeout,ui->lcdNumber,[=](){
+        ui->lcdNumber->display(time_left--);
+    });
+    static int count = 0;//计数器
+    connect(&Timer_speech2,&QTimer::timeout,this,[=](){
+        if(leaderpos==0)
+        {
+            Next_right();
+            count++;
+            if(count==form.Get_PlayerNum())
+            {
+                Vote();
+            }
+        }
+    });
 
 }
+
+void MainWindow::Vote()
+{
+    ui->statuslabel3->setText("投票阶段");
+    Timer_speech2.stop();
+    Timer_vote.start(10000);
+    static VoteDialog *V = new VoteDialog(this);
+    V->show();
+    connect(&Timer_vote,&QTimer::timeout,[=](){
+        Timer_vote.start(10000);
+        V->show();
+        Next_right();
+        time_left = 10;
+    });
+    connect(V,&VoteDialog::senddata,[=](int num){
+        if(form.P[activeplayer-1].Get_Leader())
+        {
+            form.P[num-1].Set_Voted(1+leadvote+form.P[num-1].Get_voted());
+        }else
+        {
+            form.P[num-1].Set_Voted(1+form.P[num-1].Get_voted());
+        }
+        ui->tiptable->setItem(num-1,4,new QTableWidgetItem(QString::number(form.P[num-1].Get_voted())));
+        Timer_vote.start(1);
+    });
+
+    Night();
+}
+
+void MainWindow::Night()
+{
+
+}
+
+void MainWindow::Next_left()
+{
+    if(activeplayer==1)
+    {
+        activeplayer = form.Get_PlayerNum();
+    }else
+    {
+        activeplayer--;
+    }
+
+    if(form.P[activeplayer-1].Get_Id()==0)
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/red.png)");
+    }else
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
+    }
+    ui->playerlabel2->setText(QString::number(form.P[activeplayer-1].Get_Position()));
+    time_left = 10;
+}
+
+void MainWindow::Next_right()
+{
+    if(activeplayer==form.Get_PlayerNum())
+    {
+        activeplayer = 1;
+    }else
+    {
+        activeplayer++;
+    }
+
+    if(form.P[activeplayer-1].Get_Id()==0)
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/red.png)");
+    }else
+    {
+        ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
+    }
+    ui->playerlabel2->setText(QString::number(form.P[activeplayer-1].Get_Position()));
+    time_left = 10;
+}
+
+
 
 MainWindow::~MainWindow()
 {
