@@ -4,6 +4,8 @@
 #include <QSpinBox>
 #include <QDebug>
 #include <QPushButton>
+#include <QMessageBox>
+#include <QDialog>
 #include <cmath>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -106,7 +108,7 @@ void MainWindow:: Go()
         ui->tiptable->setItem(i,col++,new QTableWidgetItem("存活"));
         ui->tiptable->setItem(i,col++,new QTableWidgetItem("未知"));
         ui->tiptable->setItem(i,col++,new QTableWidgetItem("否"));
-        ui->tiptable->setItem(i,col++,new QTableWidgetItem(QString::number(0)));
+        ui->tiptable->setItem(i,col++,new QTableWidgetItem(QString::number(0.0)));
     }
 
     ui->daylabel1->setVisible(true);
@@ -126,33 +128,63 @@ void MainWindow:: Go()
         ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
     }
 
+    if(form.Get_PlayerNum()%2)
+        leadvote = -0.5;
+    else
+        leadvote = 0.5;
+
     Speech();
 }
 
 
 void MainWindow::Speech()
 {
-    Timer_speech1.setInterval(1000);
-    Timer_speech1.start();
+    Timer_speech1.start(1000);
     time_left = 10;
-    Timer_speech2.setInterval(10000);
-    Timer_speech2.start();
+    Timer_speech2.start(10000);
 
-    connect(&Timer_speech1,&QTimer::timeout,ui->lcdNumber,[=](){
-        ui->lcdNumber->display(time_left--);
-    });
     static int count = 0;//计数器
-    connect(&Timer_speech2,&QTimer::timeout,this,[=](){
-        if(leaderpos==0)
+    count = 0;
+
+    if(leaderpos!=0)
+    {
+        ui->statuslabel3->setText("发言阶段");
+        activeplayer = leaderpos;
+        if(form.P[activeplayer-1].Get_Id()==0)
         {
-            Next_right();
-            count++;
-            if(count==form.Get_PlayerNum())
-            {
-                Vote();
-            }
+            ui->picturelabel->setStyleSheet("border-image: url(:/image/red.png)");
+        }else
+        {
+            ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
         }
-    });
+        ui->playerlabel2->setText(QString::number(form.P[activeplayer-1].Get_Position()));
+        QMessageBox::question(this,"选择发言方向","请选择发言方向");
+    }else
+    {
+        connect(&Timer_speech1,&QTimer::timeout,ui->lcdNumber,[=](){
+            qDebug() << QString::number(time_left);
+            ui->lcdNumber->display(time_left--);
+        });
+        connect(&Timer_speech2,&QTimer::timeout,this,[=](){
+            if(leaderpos==0)
+            {
+                Next_right();
+                count++;
+                if(count==form.Get_PlayerNum())
+                {
+                    Vote();
+                }
+            }else
+            {
+                //等会完善这个东西：第二轮及以后的发言阶段
+                qDebug() << "success";
+            }
+        });
+    }
+
+
+
+
 
 }
 
@@ -162,12 +194,53 @@ void MainWindow::Vote()
     Timer_speech2.stop();
     Timer_vote.start(10000);
     static VoteDialog *V = new VoteDialog(this);
+    static int count2 = 0;
+    count2 = 0;
     V->show();
     connect(&Timer_vote,&QTimer::timeout,[=](){
         Timer_vote.start(10000);
+        count2++;
         V->show();
         Next_right();
         time_left = 10;
+        if(count2==form.Get_IdNumber(0)+form.Get_IdNumber(1))//村长选举判断
+        {
+            V->close();
+            int maximum = form.P[0].Get_voted();
+            int maxpos = form.P[0].Get_Position();
+            for(int i=1;i<form.Get_PlayerNum();i++)
+            {
+                if(form.P[i].Get_Death()==false&&form.P[i].Get_voted()>maximum)
+                {
+                    maximum = form.P[i].Get_voted();
+                    maxpos = form.P[i].Get_Position();
+                }
+            }
+            if(leaderpos==0)//村长当选路线
+            {
+                Timer_vote.stop();
+                form.P[maxpos-1].Change_Leader();
+                leaderpos = maxpos;
+                ui->tiptable->setItem(maxpos-1,3,new QTableWidgetItem("是"));
+                QMessageBox msgbox;
+                msgbox.setText(QString::number(leaderpos)+"号玩家当选为村长");
+                msgbox.setStandardButtons(QMessageBox::Ok);
+                msgbox.setDefaultButton(QMessageBox::Ok);
+                Timer_speech1.stop();
+                msgbox.exec();
+                time_left=10;
+                Timer_speech1.start();
+                for(int i=0;i<form.Get_PlayerNum();i++)
+                {
+                    form.P[i].Set_Voted(0.0);
+                    ui->tiptable->setItem(i,4,new QTableWidgetItem(QString::number(0.0)));
+                }
+                Speech();//返回发言阶段
+            }else//放逐路线  //等会完善这个东西记得链接只有一次
+            {
+
+            }
+        }
     });
     connect(V,&VoteDialog::senddata,[=](int num){
         if(form.P[activeplayer-1].Get_Leader())
@@ -180,6 +253,8 @@ void MainWindow::Vote()
         ui->tiptable->setItem(num-1,4,new QTableWidgetItem(QString::number(form.P[num-1].Get_voted())));
         Timer_vote.start(1);
     });
+
+
 
     Night();
 }

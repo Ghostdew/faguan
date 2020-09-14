@@ -10,7 +10,7 @@ VoteDialog::VoteDialog(QWidget *parent) :
     connect(ui->pushButton,&QPushButton::clicked,[=](){
        int num=ui->spinBox->value();
        emit senddata(num);
-       this->close();
+       close();
     });
 }
 
