@@ -12,7 +12,7 @@ bool Player::Get_Openeye(){return is_openeye;}
 
 void Player::Change_Death(){is_dead=true;}
 
-void Player::Change_Leader(){is_leader=true;}
+void Player::Change_Leader(){is_leader=!is_leader;}
 
 void Player::Change_Openeye(){this->is_openeye=!this->Get_Openeye();}
 

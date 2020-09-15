@@ -31,7 +31,7 @@ private:
     Ui::MainWindow *ui;
     Platform form;//平台实例
     QTimer Timer_Gamestart;//计时器
-    QTimer Timer_speech1,Timer_speech2;//发言计时器
+    QTimer Timer_speech1,Timer_speech2;//发言计时器,***************发言计时器1最好改名为lcd计时器
     QTimer Timer_vote;//投票计时器
     int leaderpos =0;//当前村长位置，0为无村长
     int time_left;//剩余时间
