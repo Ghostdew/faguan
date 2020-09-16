@@ -139,9 +139,10 @@ void MainWindow:: Go()
 
 void MainWindow::Speech()//***********************************文本框输入还没做！！
 {
+    Timer_speech2.start(10000);
     Timer_speech1.start(1000);
     time_left = 10;
-    Timer_speech2.start(10000);
+
 
     static int count = 0;//计数器
     count = 0;
@@ -184,21 +185,21 @@ void MainWindow::Speech()//***********************************文本框输入还
         });
         connect(&Timer_speech2,&QTimer::timeout,this,[=](){
             Timer_speech2.start(10000);
-            if(leaderpos==0)
+            if(leaderpos==0)//第一轮选举村长发言阶段
             {
-                Next_right();
+                Next_right();//右置位发言
                 count++;
                 if(count==form.Get_PlayerNum())
                 {
-                    Vote();
+                    Vote();//所有人都完成发言，进入投票阶段
                 }
             }else
             {
-                if(direction)//等会完善这个东西：第二轮及以后的发言阶段
+                if(direction)//第二轮及以后的发言阶段,根据村长的选择由村长左置位或右置位开始发言
                 {
                     Next_left();
                     count++;
-                    if(count==form.Get_IdNumber(0)+form.Get_IdNumber(1)+1)
+                    if(count==form.Get_IdNumber(0)+form.Get_IdNumber(1)+1)//因为之前切换了一下，所以最后count要比真实发言人数多1
                     {
                         Vote();
                     }
@@ -214,6 +215,10 @@ void MainWindow::Speech()//***********************************文本框输入还
 
 
             }
+        });
+        connect(ui->speechbtn,&QPushButton::clicked,[=](){
+            if(Timer_speech2.isActive())
+                Timer_speech2.start(1);
         });
     }
 
@@ -245,7 +250,7 @@ void MainWindow::Vote()
             V->show();
             Next_right();
             time_left = 10;
-            if(count2==form.Get_IdNumber(0)+form.Get_IdNumber(1))//村长选举判断
+            if(count2==form.Get_IdNumber(0)+form.Get_IdNumber(1))//选举结束判断
             {
                 V->close();
                 float maximum = form.P[0].Get_voted();
@@ -266,6 +271,8 @@ void MainWindow::Vote()
                     ui->tiptable->setItem(maxpos-1,3,new QTableWidgetItem("是"));
 
                     QMessageBox msgbox;//实现弹出对话框提示玩家村长人选
+                    msgbox.setWindowTitle("系统提示");
+                    msgbox.setWindowIcon(QIcon(":/image/titleicon.jpg"));
                     msgbox.setText(QString::number(leaderpos)+"号玩家当选为村长");
                     msgbox.setStandardButtons(QMessageBox::Ok);
                     msgbox.setDefaultButton(QMessageBox::Ok);
@@ -288,6 +295,8 @@ void MainWindow::Vote()
                     QMessageBox exbox;//实现弹出对话框提示玩家被放逐人选
                     exbox.setStandardButtons(QMessageBox::Ok);
                     exbox.setDefaultButton(QMessageBox::Ok);
+                    exbox.setWindowTitle("系统提示");
+                    exbox.setWindowIcon(QIcon(":/image/titleicon.jpg"));
 
                     QString str_text;
                     QString str_red = "红牌";
@@ -327,26 +336,36 @@ void MainWindow::Vote()
 
                     if(exleader)//村长被放逐，指定新任村长 ***************************今天写完可以吗？？很简单的，记得弹个对话框....简单个锤子，比night函数还难。。。。明天再写了，我感觉还得自己建一个dialog用exec（）否则不好写
                     {
-//                        QWidget *Choosewidgt = new QWidget;//创建选择人数窗口
-//                        Choosewidgt->setFixedSize(300,140);
-//                        Choosewidgt->setWindowTitle("选择新任村长");
-//                        Choosewidgt->setWindowIcon(QIcon(":/image/titleicon.jpg"));
-//                        QSpinBox *nbox = new QSpinBox(Choosewidgt);
-//                        nbox->move(190,30);
-//                        nbox->setMinimum(3);
-//                        QLabel *nlabel = new QLabel("请指定新任村长：",Choosewidgt);
-//                        nlabel->move(50,35);
-//                        QPushButton *ok =new QPushButton("确认",Choosewidgt);
-//                        ok->move(140,100);
-//                        Choosewidgt->show();
-//                        connect(ok,&QPushButton::clicked,Choosewidgt,[=](){
-//                            int pos = nbox->value();
-//                            leaderpos = pos;
-//                            form.P[leaderpos-1].Change_Leader();
-//                            ui->tiptable->setItem(i,3,new QTableWidgetItem("是"));
+                        QDialog *Choosewidgt = new QDialog(this);//创建选择新任村长窗口
+                        Choosewidgt->setFixedSize(300,140);
+                        Choosewidgt->setWindowTitle("系统提示");
+                        Choosewidgt->setWindowIcon(QIcon(":/image/titleicon.jpg"));
+                        QSpinBox *nbox = new QSpinBox(Choosewidgt);
+                        nbox->move(190,30);
+                        nbox->setMinimum(1);
+                        QLabel *nlabel = new QLabel("请指定新任村长：",Choosewidgt);
+                        nlabel->move(50,35);
+                        QPushButton *ok =new QPushButton("确认",Choosewidgt);
+                        ok->move(140,100);
+                        connect(ok,&QPushButton::clicked,Choosewidgt,[=](){
+                            int pos = nbox->value();
+                            leaderpos = pos;
+                            form.P[leaderpos-1].Change_Leader();
+                            ui->tiptable->setItem(leaderpos-1,3,new QTableWidgetItem("是"));
 
-//                        });
+                            QMessageBox msgbox;//实现弹出对话框提示玩家新村长人选
+                            msgbox.setText(QString::number(leaderpos)+"号玩家当选为村长");
+                            msgbox.setWindowTitle("系统提示");
+                            msgbox.setWindowIcon(QIcon(":/image/titleicon.jpg"));
+                            msgbox.setStandardButtons(QMessageBox::Ok);
+                            msgbox.setDefaultButton(QMessageBox::Ok);
+                            msgbox.exec();
 
+
+                            Choosewidgt->close();
+                        });
+                        Choosewidgt->exec();
+                        //delete Choosewidgt;
                     }
 
                     for(int i=0;i<form.Get_PlayerNum();i++)//玩家票数归零
@@ -355,12 +374,11 @@ void MainWindow::Vote()
                         ui->tiptable->setItem(i,4,new QTableWidgetItem(QString::number(0.0)));
                     }
 
-                    if(form.GameOver())
+                    if(form.GameOver())//判断游戏是否结束**************最后写
                     {
-
+                        qDebug() << "GameOver";
                     }else
                     {
-                        Timer_speech1.start();
                         Night();
                     }
 
@@ -384,8 +402,111 @@ void MainWindow::Vote()
 
 }
 
-void MainWindow::Night()
+void MainWindow::Night()//夜晚睁眼阶段
 {
+    ui->statuslabel3->setText("夜晚阶段");
+    form.Change_Night();
+    int night = form.Get_Night();//由随机数判断是什么夜晚
+    QString str_text = "今晚为：";
+    QMessageBox night_msg;//创建弹出窗口告诉玩家是什么夜晚，并在左上角显示
+    night_msg.setWindowTitle("系统提示");
+    night_msg.setWindowIcon(QIcon(":/image/titleicon.jpg"));
+    night_msg.setStandardButtons(QMessageBox::Ok);
+    night_msg.setDefaultButton(QMessageBox::Ok);
+
+    if(night)
+    {
+        ui->statuslabel2->setText("黑夜");
+        str_text +="黑夜";
+    }else
+    {
+        ui->statuslabel2->setText("红夜");
+        str_text +="红夜";
+    }
+    night_msg.setText(str_text);
+    night_msg.exec();
+    //*******************************记得开计时器，之后睁眼要用
+    for(int i=0;i<form.Get_PlayerNum();i++)//当前活跃玩家变为第一个没有死亡的玩家
+    {
+        if(!form.P[i].Get_Death())
+        {
+            activeplayer = i+1;
+            if(form.P[i].Get_Id()==0)
+            {
+                ui->picturelabel->setStyleSheet("border-image: url(:/image/red.png)");
+            }else
+            {
+                ui->picturelabel->setStyleSheet("border-image: url(:/image/black.png)");
+            }
+            ui->playerlabel2->setText(QString::number(form.P[activeplayer-1].Get_Position()));
+            break;
+        }
+    }
+
+    time_left = 10;
+    Timer_speech1.start(1000);//分别启动计时器
+
+    static int eyecount =0;
+    eyecount = 0;
+    if(day==1)//只做一次信号和槽的连接
+    {
+        connect(&Timer_night,&QTimer::timeout,[=](){
+            Timer_night.start(10000);
+            if(QMessageBox::Yes == QMessageBox::question(this,"系统提示","今晚是否睁眼",QMessageBox::Yes|QMessageBox::No,QMessageBox::Yes))
+            {
+                form.P[activeplayer-1].Change_Openeye();
+                eyecount++;
+                Next_right();
+            }else
+            {
+                eyecount++;
+                Next_right();
+            }
+            if(eyecount == form.Get_IdNumber(0)+form.Get_IdNumber(1))
+            {
+                time_left = 10;
+                Timer_speech1.stop();
+                Timer_night.stop();
+                if(form.Get_Night() == 0&& form.Get_Openeyes(0)%2==0)
+                {
+                    leadvote = 0;
+                }else
+                {
+                    if(form.Get_Night() == 1 && form.Get_Openeyes(1)%2==0)
+                    {
+                        leadvote = 0;
+                    }else
+                    {
+                        leadvote = 0.5;
+                    }
+                }
+                for(int i=0;i<form.Get_PlayerNum();i++)//睁眼人数归零
+                {
+                    if(form.P[i].Get_Openeye())
+                        form.P[i].Change_Openeye();
+                }
+                static QMessageBox morning_msg;//创建弹出窗口告诉玩家是什么夜晚，并在左上角显示
+                morning_msg.setWindowTitle("系统提示");
+                morning_msg.setWindowIcon(QIcon(":/image/titleicon.jpg"));
+                morning_msg.setStandardButtons(QMessageBox::Ok);
+                morning_msg.setDefaultButton(QMessageBox::Ok);
+                if(form.Get_PlayerNum()%2)
+                    morning_msg.setText("天亮了，村长拥有"+QString::number(1-leadvote)+"票");
+                else
+                    morning_msg.setText("天亮了，村长拥有"+QString::number(1+leadvote)+"票");
+                day++;
+                ui->daylabel2->setText(QString::number(day));
+                ui->statuslabel2->setText("白天");
+                morning_msg.exec();
+                Speech();
+            }else
+            {
+                Timer_night.start(1);
+            }
+        });
+    }
+
+    Timer_night.start(1);
 
 }
 

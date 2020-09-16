@@ -33,10 +33,12 @@ private:
     QTimer Timer_Gamestart;//计时器
     QTimer Timer_speech1,Timer_speech2;//发言计时器,***************发言计时器1最好改名为lcd计时器
     QTimer Timer_vote;//投票计时器
+    QTimer Timer_night;//夜晚计时器
     int leaderpos =0;//当前村长位置，0为无村长
     int time_left;//剩余时间
     int direction = 0;//0为从村长右边玩家开始发言，1为从村长左边玩家开始发言
     int activeplayer = 1;//当前活跃玩家
+    int day =1;
     float leadvote = 0.5;//村长票数改变量
 
 

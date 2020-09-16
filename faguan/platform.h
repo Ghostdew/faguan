@@ -11,7 +11,7 @@ class Player;
 class Platform
 {
     int playernum;//玩家人数
-    int status;//当前状态 0为第一天村长选举阶段，1为白天发言阶段，2为白天放逐阶段，3为夜晚
+    //int status;//当前状态 0为第一天村长选举阶段，1为白天发言阶段，2为白天放逐阶段，3为夜晚
     int night_type;//夜晚类型 0为红夜，1为黑夜
 public:
     Platform();

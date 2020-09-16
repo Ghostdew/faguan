@@ -10,7 +10,7 @@ bool cmp( Player &a , Player &b)
 Platform::Platform()//根据玩家人数初始化平台数据
 {
     playernum = 0;//默认人数为0
-    status = 0;//默认第一天发言阶段
+    //status = 0;//默认第一天发言阶段
     night_type = 0;//夜晚属性初始化（默认红夜）
 }
 
@@ -73,7 +73,7 @@ int Platform::Get_Openeyes(int id)//获取对应阵营夜晚睁眼人数
     int count = 0;
     for(unsigned int i=0;i<P.size();i++)
     {
-        if(P[i].Get_Openeye()&&P[i].Get_Id()==id)
+        if(P[i].Get_Openeye()&&P[i].Get_Id()==id&&!P[i].Get_Death())
             count++;
     }
     return count;
