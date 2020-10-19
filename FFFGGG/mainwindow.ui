@@ -459,6 +459,28 @@ background-color: rgba(255, 132, 139, 0);</string>
      <string>玩家信息表</string>
     </property>
    </widget>
+   <widget class="QLabel" name="speechLabel">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>190</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>楷体</family>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 170, 127);</string>
+    </property>
+    <property name="text">
+     <string>发言内容</string>
+    </property>
+   </widget>
    <zorder>picturelabel</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>layoutWidget</zorder>
@@ -480,6 +502,7 @@ background-color: rgba(255, 132, 139, 0);</string>
    <zorder>hideButton</zorder>
    <zorder>showButton</zorder>
    <zorder>tableLabel</zorder>
+   <zorder>speechLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

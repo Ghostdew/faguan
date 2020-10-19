@@ -138,6 +138,7 @@ void MainWindow:: endGame(int type)
     ui->tableLabel->setVisible(false);
     ui->helpButton->setVisible(false);
     ui->closeButton->setVisible(false);
+    ui->speechLabel->setVisible(false);
 
 
     ui->endTitleLabel->setVisible(true);//显示游戏结束控件
@@ -293,10 +294,10 @@ void MainWindow::Vote()
     Timer_vote.start(vote_time*1000);
 
 
-    VoteDialog *V = new VoteDialog(this,form.Get_PlayerNum());//投票窗口实例创建（只有一个）
+    VoteDialog *V = new VoteDialog(this,form.Get_PlayerNum());//投票窗口实例创建
     static int count2 = 0;
     count2 = 0;
-    V->show();//第二次投票不会自动到下一个人！！！！！！！！！！！！！！！！！！！
+    V->show();
     if(leaderpos==0)//只做一次信号和槽连接，判断是否第一次进入发言函数
     {
         connect(&Timer_vote,&QTimer::timeout,[=](){
@@ -394,7 +395,7 @@ void MainWindow::Vote()
 
 
 
-                    if(form.GameOver())//判断游戏是否结束**************最后写
+                    if(form.GameOver())//判断游戏是否结束
                     {
                         int type = form.GameOver();
                         if(type==1)

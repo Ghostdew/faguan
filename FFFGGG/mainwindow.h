@@ -23,20 +23,15 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
-
+    Q_OBJECT//QT界面用
 public:
     explicit MainWindow(QWidget *parent,int num);
     void paintEvent(QPaintEvent *);//绘图事件，绘制背景图片
     void closeEvent(QCloseEvent *);//关闭窗口事件
-    void endGame(int type);
-
-
-
+    void endGame(int type);//游戏结束函数
     ~MainWindow();
-
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui;//ui指针
     Platform form;//平台实例
     QTimer Timer_Display,Timer_speech;//显示计时器,发言计时器
     QTimer Timer_vote;//投票计时器
@@ -48,10 +43,8 @@ private:
     int day =1;//游戏进行天数
     int speech_time = 120 ,vote_time = 30;//发言和投票的限制时间
     float leadvote = 0.5;//村长票数改变量
-
 signals:
     void restart();//返回信号
-
 private slots:
     void Go();//游戏开始运行
     void Speech();//发言阶段

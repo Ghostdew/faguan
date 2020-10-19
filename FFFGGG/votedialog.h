@@ -9,17 +9,17 @@ class VoteDialog;
 
 class VoteDialog : public QDialog
 {
-    Q_OBJECT
+    Q_OBJECT//QT界面用
 
 public:
-    explicit VoteDialog(QWidget *parent,int playernum);
-    ~VoteDialog();
+    explicit VoteDialog(QWidget *parent,int playernum);//构造函数，初始化选择窗口
+    ~VoteDialog();//默认析构函数
 
 private:
-    Ui::VoteDialog *ui;
+    Ui::VoteDialog *ui;//ui指针
 
 signals:
-    void senddata(int data);
+    void senddata(int data);//选择编号信号
 
 };
 

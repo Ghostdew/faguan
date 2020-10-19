@@ -19,17 +19,17 @@ public:
         is_dead = false;
         is_leader = false;
         is_openeye = false;
-    }
-    void Set_Voted(float num);
-    int Get_Id(){return id;}
-    int Get_Position(){return position;}
-    float Get_voted();
-    bool Get_Death();
-    bool Get_Openeye();
-    bool Get_Leader();
-    void Change_Death();
-    void Change_Openeye();
-    void Change_Leader();
+    }//构造函数，初始化玩家基本属性
+    void Set_Voted(float num);//设置玩家被投票数
+    int Get_Id(){return id;}//得到玩家的身份
+    int Get_Position(){return position;}//得到玩家的位置
+    float Get_voted();//得到玩家的被投票数
+    bool Get_Death();//得到玩家的死亡情况
+    bool Get_Openeye();//得到玩家晚上是否睁眼
+    bool Get_Leader();//得到玩家是否为村长
+    void Change_Death();//改变玩家的死亡情况
+    void Change_Openeye();//改变玩家的睁眼情况
+    void Change_Leader();//改变玩家担任村长情况
 };
 
 #endif // PLAYER_H

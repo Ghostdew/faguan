@@ -21,7 +21,7 @@ void Platform::init(int num)
     std::vector<int>Temp;
     for(int i=1;i<=num;i++)
     {
-        int key;
+        int key=-1;
         Temp.push_back(key);
         while(!Temp.empty())
         {
@@ -102,11 +102,6 @@ void Platform::Set_Playernum(int num)
     playernum = num;
 }
 
-int Platform::Choose_Leader(int pos)//村长死亡后选择另外一人成为村长
-{
-    P[pos-1].Change_Leader();
-    return pos;
-}
 
 
 
