@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/black.png</file>
+        <file>image/closebutton.png</file>
+        <file>image/closebutton2.png</file>
+        <file>image/exitbutton.png</file>
+        <file>image/exitbutton2.png</file>
+        <file>image/help.png</file>
+        <file>image/helpbutton.png</file>
+        <file>image/helpbutton2.png</file>
+        <file>image/mainbackground.jpg</file>
+        <file>image/red.png</file>
+        <file>image/restartbutton.png</file>
+        <file>image/restartbutton2.png</file>
+        <file>image/StartButton.jpg</file>
+        <file>image/StartButton2.jpg</file>
+        <file>image/titleicon.jpg</file>
+    </qresource>
+</RCC>
